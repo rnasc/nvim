@@ -273,7 +273,8 @@ local default_plugins = {
   },
   { "tpope/vim-endwise"},
   { "tpope/vim-rails"},
-  { "vim-ruby/vim-ruby"}
+  { "vim-ruby/vim-ruby"},
+  { "brenoprata10/nvim-highlight-colors"}
 }
 
 local config = require("core.utils").load_config()

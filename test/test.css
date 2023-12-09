@@ -1,0 +1,14 @@
+#ffffff
+
+#CCCCCC
+
+red
+
+#c8c8c8
+
+#5599CC
+
+
+.test {
+  background-color: var(--theme-accent-color);
+}
