@@ -39,3 +39,7 @@ require('nvim-highlight-colors').setup {
 }
 require("nvim-highlight-colors").turnOn()
 require("nvim-highlight-colors").toggle()
+
+
+
+require('core.lsp')

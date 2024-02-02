@@ -134,6 +134,14 @@ local default_plugins = {
       vim.g.mason_binaries_list = opts.ensure_installed
     end,
   },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = { "lua_ls", "tsserver"}
+      })
+    end
+  },
 
   {
     "neovim/nvim-lspconfig",
@@ -142,6 +150,10 @@ local default_plugins = {
     end,
     config = function()
       require "plugins.configs.lspconfig"
+      -- local lspconfig = require("lspconfig")
+      -- lspconfig.lua_ls.setup({
+      --
+      -- })
     end,
   },
 
@@ -247,6 +259,22 @@ local default_plugins = {
         telescope.load_extension(ext)
       end
     end,
+  },
+
+  -- Telescope UI Select -
+  {
+    "nvim-telescope/telescope-ui-select.nvim",
+    config = function()
+       require("telescope").setup({
+         extensions = {
+           ["ui-select"] = {
+             require("telescope.themes").get_dropdown {
+             }
+           }
+         }
+       })
+       require("telescope").load_extension("ui-select")
+    end
   },
 
   -- Ag Silver Searcher
