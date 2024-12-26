@@ -465,6 +465,8 @@ M.gitsigns = {
       end,
       "Toggle deleted",
     },
+    ["<space>"] = { 'zf', 'Folding'},
+    ["<leader><space>"] = {'zo', 'Open Folding'}
   },
 }
 
