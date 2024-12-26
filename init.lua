@@ -43,3 +43,7 @@ require("nvim-highlight-colors").toggle()
 
 
 require('core.lsp')
+-- require("neodev").setup({
+--   library = { plugins = { "nvim-dap-ui" }, types = true },
+-- })
+

@@ -138,7 +138,7 @@ local default_plugins = {
     "williamboman/mason-lspconfig.nvim",
     config = function()
       require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "tsserver", "ruby-lsp", "solargraph"}
+        ensure_installed = { "lua_ls", "ts_ls", "ruby-lsp", "solargraph"}
       })
     end
   },
@@ -265,15 +265,15 @@ local default_plugins = {
   {
     "nvim-telescope/telescope-ui-select.nvim",
     config = function()
-       require("telescope").setup({
-         extensions = {
-           ["ui-select"] = {
-             require("telescope.themes").get_dropdown {
-             }
-           }
-         }
-       })
-       require("telescope").load_extension("ui-select")
+      require("telescope").setup({
+        extensions = {
+          ["ui-select"] = {
+            require("telescope.themes").get_dropdown {
+            }
+          }
+        }
+      })
+      require("telescope").load_extension("ui-select")
     end
   },
 
@@ -296,15 +296,81 @@ local default_plugins = {
       require("which-key").setup(opts)
     end,
   },
-  {
-    "tpope/vim-commentary"
-  },
+  {"tpope/vim-commentary"},
   { "tpope/vim-endwise"},
-  { "tpope/vim-rails"},
+  { "tpope/vim-rails", enabled = true},
   { "vim-ruby/vim-ruby"},
-  { "brenoprata10/nvim-highlight-colors"}
+  { "brenoprata10/nvim-highlight-colors"},
+  {
+    "mfussenegger/nvim-dap",
+    dependencies = {
+      "rcarriga/nvim-dap-ui",
+      "nvim-neotest/nvim-nio",
+      "suketa/nvim-dap-ruby",
+      "leoluz/nvim-dap-go"
+    },
+    config = function()
+      local dap = require("dap")
+      local dapui = require("dapui")
+
+      require('dapui').setup()
+      require("dap-go").setup()
+      require("dap-ruby").setup()
+
+      dap.listeners.before.attach.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.launch.dapui_config = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated.dapui_config = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited.dapui_config = function()
+        dapui.close()
+      end
+
+      dap.adapters.ruby = function(callback, config)
+        callback {
+          type = "server",
+          host = "127.0.0.1",
+          port = "${port}",
+          executable = {
+            command = "bundle",
+            args = { "exec", "rdbg", "-n", "--open", "--port", "${port}",
+              "-c", "--", "bundle", "exec", config.command, config.script,
+            },
+          },
+        }
+      end
+
+      dap.configurations.ruby = {
+        {
+          type = "ruby",
+          name = "debug current file",
+          request = "attach",
+          localfs = true,
+          command = "ruby",
+          script = "${file}",
+        },
+        {
+          type = "ruby",
+          name = "run current spec file",
+          request = "attach",
+          localfs = true,
+          command = "rspec",
+          script = "${file}",
+        },
+      }
+
+      vim.keymap.set('n', '<leader>dt', dap.toggle_breakpoint, {})
+      vim.keymap.set('n', '<leader>dc', dap.continue, {} )
+
+    end,
+  }
 }
 
+--# require("configs.debugging")
 local config = require("core.utils").load_config()
 
 if #config.plugins > 0 then

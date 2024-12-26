@@ -2,6 +2,7 @@
 
 local M = {}
 
+
 M.general = {
   i = {
     -- go to  beginning and end
@@ -54,6 +55,22 @@ M.general = {
         vim.lsp.buf.format { async = true }
       end,
       "LSP formatting",
+    },
+    ["<leader>dt"] = { 
+      function()
+        local dap = require('dap')
+
+        dap.toggle_breakpoint()
+      end,
+      "DAP Breakpoint",
+    },
+    ["<leader>dc"] = { 
+      function()
+        local dap = require('dap')
+
+        dap.continue() 
+      end,
+      "DAP Continue",
     },
   },
 
