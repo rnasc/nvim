@@ -150,7 +150,32 @@ local default_plugins = {
     end,
     config = function()
       require "plugins.configs.lspconfig"
-      -- local lspconfig = require("lspconfig")
+      local lspconfig = require("lspconfig")
+      lspconfig.emmet_language_server.setup({
+        filetypes = { "css", "eruby", "html", "javascript", "javascriptreact", "less", "sass", "scss", "pug", "typescriptreact" },
+        -- Read more about this options in the [vscode docs](https://code.visualstudio.com/docs/editor/emmet#_emmet-configuration).
+        -- **Note:** only the options listed in the table are supported.
+        init_options = {
+          ---@type table<string, string>
+          includeLanguages = {},
+          --- @type string[]
+          excludeLanguages = {},
+          --- @type string[]
+          extensionsPath = {},
+          --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/preferences/)
+          preferences = {},
+          --- @type boolean Defaults to `true`
+          showAbbreviationSuggestions = true,
+          --- @type "always" | "never" Defaults to `"always"`
+          showExpandedAbbreviation = "always",
+          --- @type boolean Defaults to `false`
+          showSuggestionsAsSnippets = false,
+          --- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/syntax-profiles/)
+          syntaxProfiles = {},
+          --- @type table<string, string> [Emmet Docs](https://docs.emmet.io/customization/snippets/#variables)
+          variables = {},
+        },
+      })
       -- lspconfig.lua_ls.setup({
       --
       -- })
@@ -301,73 +326,102 @@ local default_plugins = {
   { "tpope/vim-rails", enabled = true},
   { "vim-ruby/vim-ruby"},
   { "brenoprata10/nvim-highlight-colors"},
-  {
-    "mfussenegger/nvim-dap",
+  { "mfussenegger/nvim-dap",
     dependencies = {
       "rcarriga/nvim-dap-ui",
       "nvim-neotest/nvim-nio",
       "suketa/nvim-dap-ruby",
       "leoluz/nvim-dap-go"
     },
-    config = function()
-      local dap = require("dap")
-      local dapui = require("dapui")
+  },
+  config = function()
+    local dap = require("dap")
+    local dapui = require("dapui")
 
-      require('dapui').setup()
-      require("dap-go").setup()
-      require("dap-ruby").setup()
+    require('dapui').setup()
+    require("dap-go").setup()
+    require("dap-ruby").setup()
 
-      dap.listeners.before.attach.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.launch.dapui_config = function()
-        dapui.open()
-      end
-      dap.listeners.before.event_terminated.dapui_config = function()
-        dapui.close()
-      end
-      dap.listeners.before.event_exited.dapui_config = function()
-        dapui.close()
-      end
+    dap.listeners.before.attach.dapui_config = function()
+      dapui.open()
+    end
+    dap.listeners.before.launch.dapui_config = function()
+      dapui.open()
+    end
+    dap.listeners.before.event_terminated.dapui_config = function()
+      dapui.close()
+    end
+    dap.listeners.before.event_exited.dapui_config = function()
+      dapui.close()
+    end
 
-      dap.adapters.ruby = function(callback, config)
-        callback {
-          type = "server",
-          host = "127.0.0.1",
-          port = "${port}",
-          executable = {
-            command = "bundle",
-            args = { "exec", "rdbg", "-n", "--open", "--port", "${port}",
-              "-c", "--", "bundle", "exec", config.command, config.script,
-            },
+    dap.adapters.ruby = function(callback, config)
+      callback {
+        type = "server",
+        host = "127.0.0.1",
+        port = "${port}",
+        executable = {
+          command = "bundle",
+          args = { "exec", "rdbg", "-n", "--open", "--port", "${port}",
+            "-c", "--", "bundle", "exec", config.command, config.script,
           },
-        }
-      end
-
-      dap.configurations.ruby = {
-        {
-          type = "ruby",
-          name = "debug current file",
-          request = "attach",
-          localfs = true,
-          command = "ruby",
-          script = "${file}",
-        },
-        {
-          type = "ruby",
-          name = "run current spec file",
-          request = "attach",
-          localfs = true,
-          command = "rspec",
-          script = "${file}",
         },
       }
+    end
 
-      vim.keymap.set('n', '<leader>dt', dap.toggle_breakpoint, {})
-      vim.keymap.set('n', '<leader>dc', dap.continue, {} )
-
-    end,
-  }
+    dap.configurations.ruby = {
+      {
+        type = "ruby",
+        name = "debug current file",
+        request = "attach",
+        localfs = true,
+        command = "ruby",
+        script = "${file}",
+      },
+      {
+        type = "ruby",
+        name = "run current spec file",
+        request = "attach",
+        localfs = true,
+        command = "rspec",
+        script = "${file}",
+      },
+    }
+  end,
+  {"olrtg/nvim-emmet",
+    dependencies = {
+      "olrtg/emmet-language-server"
+    },
+  },
+  {
+    'kevinhwang91/nvim-ufo',
+    dependencies = {
+      'kevinhwang91/promise-async'
+    },
+    cfg = function()
+      vim.o.foldcolumn = '1'
+      vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
+      vim.o.foldlevelstart = 99
+      vim.o.foldenable = true
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      capabilities.textDocument.foldingRange = {
+        dynamicRegistration = false,
+        lineFoldingOnly = true
+      }
+      local language_servers = require("lspconfig").util.available_servers() -- or list servers manually like {'gopls', 'clangd'}
+      for _, ls in ipairs(language_servers) do
+        require('lspconfig')[ls].setup({
+          capabilities = capabilities
+          -- you can add other fields for setting up lsp server in this table
+        })
+      end
+      require('ufo').setup({
+        provider_selector = function(bufnr, filetype, buftype)
+          return {'lsp', 'indent'}
+        end
+      })
+    end
+  },
 }
 
 --# require("configs.debugging")

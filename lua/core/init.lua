@@ -1,8 +1,29 @@
 local opt = vim.opt
+local o = vim.o
 local opt_local = vim.opt_local
 local g = vim.g
 local config = require("core.utils").load_config()
 
+
+o.foldcolumn = '1'
+o.foldlevel = 99
+o.foldlevelstart = 99
+o.foldenable = true
+
+-- vim.keymap.set('n', 'zR', require('ufo').openAllFolds, {desc = 'Open all folds'})
+-- vim.keymap.set('n', 'zM', require('ufo').closeAllFolds, {desc = 'Open all folds'})
+-- vim.keymap.set('n', 'zK', function()
+--   local winid = require('ufo').peekFoldedLinesUnderCursor()
+--   if not winid then
+--     vim.lsp.buf.hover()
+--   end
+-- end, {desc = 'Peek fold'})
+-- 
+-- require('ufo').setup({
+--   provider_selector = function(bufnr, filetype, buftype)
+--     return {'lsp', 'indent'}
+--   end
+-- })
 
 -------------------------------------- Local Options -----------------------------------
 opt_local.wrap = false
