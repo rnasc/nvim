@@ -40,5 +40,5 @@ and quirks that I like to use.
 
 | key      | purpose                          |
 |:--------:|----------------------------------|
-| <leader> | I like my leader to be comma <,> |
+| < leader > | I like my leader to be comma <,> |
 
