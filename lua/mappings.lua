@@ -1,4 +1,5 @@
 require "nvchad.mappings"
+require("nvchad.tabufline").next()
 
 -- add yours here
 
@@ -97,11 +98,13 @@ end, { desc = "Dont copy replaced text" })
 
 -- 🔌 Plugin mappings
 map("n", "<tab>", function()
-  require("nvchad.tabufline").tabuflineNext()
+  vim.cmd("bnext")
+  -- require("nvchad.tabufline").tabuflineNext()
 end, { desc = "Goto next buffer" })
 
 map("n", "<S-tab>", function()
-  require("nvchad.tabufline").tabuflinePrev()
+  vim.cmd("bprevious")
+  -- require("nvchad.tabufline").tabuflinePrev()
 end, { desc = "Goto prev buffer" })
 
 map("n", "<leader>x", function()

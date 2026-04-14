@@ -12,6 +12,12 @@ return {
       require "configs.lspconfig"
     end,
   },
+  {
+    "numToStr/Comment.nvim",
+    config = function()
+      require("Comment").setup()
+    end
+  },
 
   -- test new blink
   -- { import = "nvchad.blink.lazyspec" },

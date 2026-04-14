@@ -35,3 +35,12 @@ require "autocmds"
 vim.schedule(function()
   require "mappings"
 end)
+
+
+
+if vim.g.neovide then
+    vim.g.neovide_scale_factor = (vim.g.neovide_scale_factor or 1.0) + 0.3
+    vim.keymap.set({ "n", "v" }, "<c-+>", ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.1<CR>")
+    vim.keymap.set({ "n", "v" }, "<c-->", ":lua vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.1<CR>")
+    vim.keymap.set({ "n", "v" }, "<c-0>", ":lua vim.g.neovide_scale_factor = 1<CR>")
+end
