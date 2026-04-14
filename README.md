@@ -35,3 +35,10 @@ git clone https://github.com/NvChad/starter ~/.config/nvim && nvim
 Well... this is my version of that same repo with my personal Adjustments
 and quirks that I like to use. 
 
+
+### Special key mappings 
+
+| key      | purpose                          |
+|:--------:|----------------------------------|
+| <leader> | I like my leader to be comma <,> |
+
