@@ -147,5 +147,3 @@ end, { expr = true, desc = "Prev hunk" })
 
 
 
-
-print('---> Carregando ')
