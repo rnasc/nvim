@@ -36,7 +36,8 @@ vim.schedule(function()
   require "mappings"
 end)
 
-
+vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 
 if vim.g.neovide then
   vim.keymap.set({ "n", "v", "i" }, "<D-v>", function()
